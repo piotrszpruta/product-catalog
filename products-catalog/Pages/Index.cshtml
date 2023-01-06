@@ -1,0 +1,60 @@
+﻿@page
+@using System.Diagnostics
+@using products_catalog.Models
+@inject IHttpContextAccessor Accessor
+@{
+    IndexModel index = new();
+    ViewData["UserLogged"] = Accessor.HttpContext.Session.GetInt32("isLogged");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Catalogue</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            @foreach (var item in await index.LoadData())
+            {
+                <div class="col-md-6">
+                    <div class="card mb-4" style="max-width: 630px;">
+                        <div class="row g-0">
+                            <div class="col-md-6">
+                                @if (item.Base64Img is "")
+                                {
+                                    <img src="https://via.placeholder.com/250" class="img-fluid rounded-start" alt="no photo">
+                                }
+                                else
+                                {
+                                    <img src="@item.Base64Img" width="250" height="250" style="max-height: 250px;" class="img-fluid rounded-start" alt="no photo">
+                                }
+                                @if (Convert.ToInt32(ViewData["UserLogged"]) == 1)
+                                {
+                                    <button class="button-manager"><a class="remove-styling" asp-page="/EditProductPage?=productId=1">Edit</a></button>
+                                    <button class="button-manager"><a class="remove-styling" asp-page="/EditProductPage?=productId=1">Delete</a></button>
+                                }
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <input value="@item.Id" type="hidden">
+                                    <h5 class="card-title">@item.Model</h5>
+                                    <p class="card-text">@item.Descr</p>
+                                    <p class="card-text">
+                                        <ul>
+                                            <li><strong>Length: </strong>@item.Length cm</li>
+                                            <li><strong>Width: </strong>@item.Width cm</li>
+                                            <li><strong>Weight: </strong>@item.Weight kg</li>
+                                            <li><strong>Chamber count: </strong>@item.ChamberCount</li>
+                                        </ul>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>

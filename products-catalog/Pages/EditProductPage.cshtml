@@ -1,0 +1,17 @@
+﻿@page
+@model products_catalog.Pages.EditProductPageModel
+@inject IHttpContextAccessor Accessor
+@{
+    ViewData["UserLogged"] = Accessor.HttpContext.Session.GetInt32("isLogged");
+    if (ViewData["productId"] == "")
+    {
+        <h1>Brak podanego parametru!</h1>
+    }
+}
+<form method="post">
+    <h3>Product editor</h3>
+    Name: <input type="text" /><br />
+    Description: <input type="text" /><br />
+    Photo: <input type="file" /><br />
+    <input asp-page-handler="Upload" class="btn" type="submit" value="Upload" />
+</form>
