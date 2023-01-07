@@ -2,7 +2,7 @@
 @model products_catalog.Pages.LoginUserModel
 @inject IHttpContextAccessor Accessor
 @{
-    ViewData["ErrorMsg"] = Accessor.HttpContext.Session.GetString("ErrorMsg");
+    //ViewData["ErrorMsg"] = Accessor.HttpContext.Session.GetInt32("ErrorMsg");
     ViewData["UserLogged"] = Accessor.HttpContext.Session.GetInt32("isLogged");
 }
 <form method="post" class="col-lg-6 offset-lg-3">
@@ -21,11 +21,12 @@
                 </div>
                 @Html.EditorFor(User => User.User.Password, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
             </div>
-            @if (ViewData["ErrorMsg"] != "")
+            @if (Convert.ToInt32(ViewData["ErrorMsg"]) == 1)
             {
-                <span style="color: red;">@ViewData["ErrorMsg"]</span>
+                <span style="color: red;">Wrong username or/and password.</span>
                 <br />
                 <br />
+                ViewData["ErrorMsg"] = 0;
             }
             else
             {

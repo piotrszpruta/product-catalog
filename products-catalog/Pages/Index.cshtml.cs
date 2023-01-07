@@ -15,20 +15,20 @@ namespace products_catalog.Pages
 		{
 		}
 
-		public async Task<List<SinkModel>> LoadData()
+		public List<SinkModel> LoadData()
 		{
 			List<SinkModel> models = new();
-			await using MySqlConnection conn = new(ConnectionHelper.ConnectionString);
-			await conn.OpenAsync();
+			using MySqlConnection conn = new(ConnectionHelper.ConnectionString);
+			conn.Open();
 
-			await using MySqlCommand cmd = new()
+			using MySqlCommand cmd = new()
 			{
 				Connection = conn,
 				CommandText = "SELECT * FROM products_data",
 			};
 
-			using MySqlDataReader dtr = await cmd.ExecuteReaderAsync();
-			while (await dtr.ReadAsync())
+			using MySqlDataReader dtr = cmd.ExecuteReader();
+			while (dtr.Read())
 			{
 				models.Add(new SinkModel
 				{
@@ -42,7 +42,7 @@ namespace products_catalog.Pages
 					ChamberCount = dtr.GetString("chamber_variant"),
 				});
 			}
-			await conn.CloseAsync();
+			conn.Close();
 			return models;
 		}
 	}

@@ -1,0 +1,24 @@
+﻿@page
+@using System.Web
+@inject IHttpContextAccessor Accessor
+@{
+    ViewData["UserLogged"] = Convert.ToInt32(Accessor.HttpContext.Session.GetInt32("isLogged"));
+    ViewData["id"] = HttpUtility.UrlDecode(Request.Query["id"].FirstOrDefault()) ?? "";
+
+    if (ViewData["id"] != "")
+    {
+        RemoveProductModel removeProd = new();
+        removeProd.Remove(ViewData["id"].ToString());
+        <h2>Product deleted!</h2>
+        <br />
+        <br />
+    }
+    else
+    {
+        <h1>No parameter!</h1>
+    }
+}
+
+<form method="post">
+    <input type="submit" asp-page="Index" value="Strona główna" />
+</form>

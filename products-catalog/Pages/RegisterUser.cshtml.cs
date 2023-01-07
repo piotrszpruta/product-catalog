@@ -20,16 +20,16 @@ namespace products_catalog.Pages
 			return isLogged == 1 ? RedirectToPage("LoginUser") : null;
 		}
 
-		public async void RegisterUser()
+		public void RegisterUser()
 		{
 			string login = string.Format("{0}", Request.Form["User.UserName"]);
 			string password = string.Format("{0}", Request.Form["User.Password"]);
 			string encryptedPassword = PasswordManager.EncryptPass(password);
 			string email = string.Format("{0}", Request.Form["User.Email"]);
 
-			await using MySqlConnection conn = new(ConnectionHelper.ConnectionString);
-			await conn.OpenAsync();
-			await using MySqlCommand cmd = new()
+			using MySqlConnection conn = new(ConnectionHelper.ConnectionString);
+			conn.Open();
+			using MySqlCommand cmd = new()
 			{
 				Connection = conn,
 				CommandText = "INSERT INTO users SET username=@userLogin, password=@userPassword, email=@userEmail",
@@ -38,7 +38,7 @@ namespace products_catalog.Pages
 			cmd.Parameters.AddWithValue("@userPassword", encryptedPassword);
 			cmd.Parameters.AddWithValue("@userEmail", email);
 			cmd.ExecuteNonQuery();
-			await conn.CloseAsync();
+			conn.Close();
 		}
 	}
 }

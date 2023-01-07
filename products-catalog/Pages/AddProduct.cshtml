@@ -27,21 +27,23 @@
                     <span class="input-group-text" id="inputGroup-sizing-sm">Length</span>
                 </div>
                 <input asp-for="Product.Width" type="number" step=".01" min="0" max="200" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>&nbsp;
+            </div>
+            <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Weight</span>
                 </div>
-                <input asp-for="Product.Weight" type="number" step=".01" min="0" max="100" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                <input asp-for="Product.Weight" type="number" step=".01" min="0" max="100" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>&nbsp;
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Chamber</span>
                 </div>
-                <select asp-for="Product.ChamberCount">
+                <select asp-for="Product.ChamberCount" class="form-select">
                     <option>1</option>
                     <option>1,5</option>
                     <option>2</option>
                 </select>
             </div>
             <div class="input-group input-group-sm mb-3">
-                <input type="file" id="file" accept="image/png, image/jpeg" onchange="encodeImageFileAsURL(this)" required>
+                <input class="form-control" type="file" id="file" accept="image/png, image/jpeg" onchange="encodeImageFileAsURL(this)" required>
                 <input asp-for="Product.Base64Img" type="hidden" id="base64" />
                 <script language="JavaScript">
                     function encodeImageFileAsURL(element) {

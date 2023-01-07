@@ -15,7 +15,7 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            @foreach (var item in await index.LoadData())
+            @foreach (var item in index.LoadData())
             {
                 <div class="col-md-6">
                     <div class="card mb-4" style="max-width: 630px;">
@@ -31,8 +31,12 @@
                                 }
                                 @if (Convert.ToInt32(ViewData["UserLogged"]) == 1)
                                 {
-                                    <button class="button-manager"><a class="remove-styling" asp-page="/EditProductPage?=productId=1">Edit</a></button>
-                                    <button class="button-manager"><a class="remove-styling" asp-page="/EditProductPage?=productId=1">Delete</a></button>
+                                    <button class="button-manager">
+                                        <a class="remove-styling" href="/EditProductPage?id=@item.Id">Edit</a>
+                                    </button>
+                                    <button class="button-manager">
+                                        <a class="remove-styling" href="/RemoveProduct?id=@item.Id">Delete</a>
+                                    </button>
                                 }
                             </div>
                             <div class="col-md-6">

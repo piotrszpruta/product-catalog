@@ -1,6 +1,5 @@
 ﻿@inject IHttpContextAccessor Accessor
 @{
-
     ViewData["UserName"] = Accessor.HttpContext.Session.GetString("username");
 }
 

@@ -1,17 +1,85 @@
 ﻿@page
+@using System.Web
+@using products_catalog.Models
 @model products_catalog.Pages.EditProductPageModel
 @inject IHttpContextAccessor Accessor
 @{
     ViewData["UserLogged"] = Accessor.HttpContext.Session.GetInt32("isLogged");
-    if (ViewData["productId"] == "")
+
+    ViewData["id"] = HttpUtility.UrlDecode(Request.Query["id"].FirstOrDefault()) ?? "";
+    if (ViewData["id"] != "")
     {
-        <h1>Brak podanego parametru!</h1>
+        SinkModel product = EditProductPageModel.LoadData(ViewData["id"].ToString());
+        if (product != null)
+        {
+            <form method="post" class="col-lg-6 offset-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Edit product</h3>
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Model</span>
+                            </div>
+                            <input asp-for="Product.Model" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required value="@product.Model">
+                        </div>
+                        <div class="input-group input-group-sm mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Description<br />(max 255 chars)</span>
+                            <textarea maxlength="255" asp-for="Product.Descr" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>@product.Descr</textarea>
+                        </div>
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Width</span>
+                            </div>
+                            <input asp-for="Product.Length" type="number" step=".01" min="0" max="200" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required value="@product.Length">&nbsp;
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Length</span>
+                            </div>
+                            <input asp-for="Product.Width" type="number" step=".01" min="0" max="200" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required value="@product.Width">&nbsp;
+                        </div>
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Weight</span>
+                            </div>
+                            <input asp-for="Product.Weight" type="number" step=".01" min="0" max="100" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required value="@product.Weight">&nbsp;
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Chamber</span>
+                            </div>
+                            <select asp-for="Product.ChamberCount" class="form-select">
+                                <option>1</option>
+                                <option>1,5</option>
+                                <option>2</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm mb-3">
+                            <input class="form-control" type="file" id="file" accept="image/png, image/jpeg" onchange="encodeImageFileAsURL(this)" required>
+                            <input asp-for="Product.Base64Img" type="hidden" id="base64" />
+                            <script language="JavaScript">
+                                function encodeImageFileAsURL(element) {
+                                    var file = element.files[0];
+                                    if (file.size > 2097152) {
+                                        alert("File is too big!");
+                                        this.value = "";
+                                    } else {
+                                        var reader = new FileReader();
+                                        reader.onloadend = function () {
+                                            console.log('RESULT', reader.result)
+                                            $("#base64").val(reader.result).trigger("change");
+                                        }
+                                        reader.readAsDataURL(file);
+                                    };
+                                }
+                            </script>
+                            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+                        </div>
+                    </div>
+                    <input type="submit" value="Save" class="btn btn-primary align-self-center justify-content-center align-items-center" /><br />
+                </div>
+            </form>
+        }
+
+    }
+    else
+    {
+        <h2>No parameter!</h2>
     }
 }
-<form method="post">
-    <h3>Product editor</h3>
-    Name: <input type="text" /><br />
-    Description: <input type="text" /><br />
-    Photo: <input type="file" /><br />
-    <input asp-page-handler="Upload" class="btn" type="submit" value="Upload" />
-</form>

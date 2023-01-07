@@ -18,7 +18,7 @@ namespace products_catalog.Pages
 			return isLogged == 1 ? RedirectToPage("Index") : null;
 		}
 
-		public async void AddProduct()
+		public void AddProduct()
 		{
 			string model = string.Format("{0}", Request.Form["Product.Model"]);
 			string descr = string.Format("{0}", Request.Form["Product.Descr"]);
@@ -28,9 +28,9 @@ namespace products_catalog.Pages
 			string chamberCount = string.Format("{0}", Request.Form["Product.ChamberCount"]);
 			string imageBase64 = string.Format("{0}", Request.Form["Product.Base64Img"]);
 
-			await using MySqlConnection conn = new(ConnectionHelper.ConnectionString);
-			await conn.OpenAsync();
-			await using MySqlCommand cmd = new()
+			using MySqlConnection conn = new(ConnectionHelper.ConnectionString);
+			conn.Open();
+			using MySqlCommand cmd = new()
 			{
 				Connection = conn,
 				CommandText = "INSERT INTO products_data SET model=@model, description=@descr, width=@width, length=@length, weight=@weight, chamber_variant=@chamberCount, base64img=@imageBase64",
@@ -43,7 +43,7 @@ namespace products_catalog.Pages
 			cmd.Parameters.AddWithValue("@chamberCount", chamberCount);
 			cmd.Parameters.AddWithValue("@imageBase64", imageBase64);
 			cmd.ExecuteNonQuery();
-			await conn.CloseAsync();
+			conn.Close();
 		}
 	}
 }

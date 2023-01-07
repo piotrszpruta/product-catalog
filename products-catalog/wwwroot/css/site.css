@@ -31,14 +31,14 @@ body {
 }
 
 .button-manager {
-    border-radius: 20px;
+    border-radius: 10px;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin-top: 10px;
     margin-bottom: 10px;
     align-self: flex-end;
-    margin-left: 20px;
-    padding: 10px 30px;
+    margin-left: 10px;
+    padding: 10px 10px;
 }
 
 .remove-styling, .remove-styling:hover, .remove-styling:visited, .remove-styling:focus {

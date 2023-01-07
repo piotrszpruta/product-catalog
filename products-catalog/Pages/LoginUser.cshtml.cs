@@ -17,7 +17,7 @@ namespace products_catalog.Pages
 		public IActionResult? Index()
 		{
 			int isLogged = Convert.ToInt32(HttpContext.Session.GetInt32("isLogged"));
-			return isLogged == 1 ? RedirectToPage("Index") : null;
+			return isLogged == 1 ? RedirectToPage("/Index") : null;
 		}
 
 		public IActionResult? OnGet()
@@ -33,18 +33,24 @@ namespace products_catalog.Pages
 			return isLogged == 1 ? RedirectToPage("Index") : null;
 		}
 
-		public async Task LoginUser()
+		public void LoginUser()
 		{
+			//var cookieOptions = new CookieOptions
+			//{
+			//	Expires = DateTime.Now.AddDays(30)
+			//};
+			//Response.Cookies.Append("isLogged", "0", cookieOptions);
+
 			string login = string.Format("{0}", Request.Form["User.UserName"]);
 			string password = PasswordManager.EncryptPass(string.Format("{0}", Request.Form["User.Password"]));
 			int i = 0;
 			string name = "";
 			if (!string.IsNullOrWhiteSpace(login) && !string.IsNullOrWhiteSpace(login))
 			{
-				await using MySqlConnection conn = new(ConnectionHelper.ConnectionString);
-				await conn.OpenAsync();
+				using MySqlConnection conn = new(ConnectionHelper.ConnectionString);
+				conn.Open();
 
-				await using MySqlCommand cmd = new()
+				using MySqlCommand cmd = new()
 				{
 					Connection = conn,
 					CommandText = "SELECT * FROM users WHERE username=@userLogin AND password=@userPassword",
@@ -52,29 +58,32 @@ namespace products_catalog.Pages
 				cmd.Parameters.AddWithValue("@userLogin", login);
 				cmd.Parameters.AddWithValue("@userPassword", password);
 
-				using MySqlDataReader dtr = await cmd.ExecuteReaderAsync();
-				if (await dtr.ReadAsync())
+				using MySqlDataReader dtr = cmd.ExecuteReader();
+				if (dtr.Read())
 				{
 					i = dtr.FieldCount > 0 ? 1 : 0;
 					if (i == 0)
 					{
-						HttpContext.Session.SetString("ErrorMsg", "Wrong username or/and password.");
+						ViewData["ErrorMsg"] = 1;
+						//HttpContext.Session.SetInt32("ErrorMsg", 1);
 					}
 					else
 					{
+						ViewData["ErrorMsg"] = 0;
 						name = dtr.GetString("username");
 						HttpContext.Session.SetInt32("isLogged", i);
+						//HttpContext.Session.SetInt32("isLogged", i);
 						HttpContext.Session.SetString("username", name);
 					}
 				}
 				else
 				{
-					HttpContext.Session.SetString("ErrorMsg", "Wrong username or/and password.");
+					ViewData["ErrorMsg"] = 1;
+					//HttpContext.Session.SetInt32("ErrorMsg", 1);
 				}
 
-				await conn.CloseAsync();
+				conn.Close();
 			}
-
 		}
 	}
 }

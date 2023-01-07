@@ -1,0 +1,12 @@
+﻿@page
+@{
+    HttpContext.Session.Clear();
+    HttpContext.Session.Remove("isLogged");
+   HttpContext.Session.SetString("isLogged", "0");
+    ViewData["UserName"] = "";
+}
+
+<form method="post">
+    <span>Wylogowano!</span><br /><br />
+    <input type="submit" asp-page="Index" value="Strona główna" />
+</form>
